@@ -41,6 +41,18 @@ int main() {
             string var_name;
             iss >> var_name;
 
+            if((var_name[0] == '\'' || var_name[0] == '\"') &&
+                    (var_name[var_name.size() - 1] == '\'' || var_name[var_name.size() - 1] == '\"'))
+            {
+                cout << var_name.substr(1, var_name.size() - 2) << "\n";
+                continue;
+            }
+            else if(var_name[0] == '\'' || var_name[0] == '\"')
+            {
+                cout << "Statements must begin and end with \" or \'." << "\n";
+                continue;
+            }
+
             int val = -1;
             for(const auto& item : sym)
             {
@@ -59,11 +71,27 @@ int main() {
         {
             string var_name;
             int val = 0;
+            bool found = false;
             
             if (!(iss >> var_name)) continue; 
             iss >> val;
 
-            sym.push_back({var_name, val});
+            if(var_name[0] == '\'' || var_name[0] == '\"')
+            {
+                cout << "Variables can't begin with \' or \"." << "\n";
+                continue;
+            }
+
+            for(auto &item : sym)
+            {
+                if(item.id == var_name)
+                {
+                    found = true;
+                    item.val = val;
+                    break;
+                }
+            }
+            if(!found) sym.push_back({var_name, val});
         }
 
         else cout << "Unknown command.\n";
